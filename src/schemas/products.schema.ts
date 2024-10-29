@@ -5,20 +5,26 @@ export type ProductDocument = HydratedDocument<Product>;
 
 @Schema()
 export class Product {
-  @Prop()
+  @Prop({required: true, unique: true})
+  id: string;
+
+  @Prop({required: true})
   title: string;
 
-  @Prop()
+  @Prop({required: true})
   price: number;
 
-  @Prop()
+  @Prop({required: true})
   description: string;
 
-  @Prop()
+  @Prop({required: true})
   category: string;
 
-  @Prop()
+  @Prop({required: true})
   image: string;
+
+  @Prop({default: false})
+  isAddedToCart: boolean
 
   @Prop(raw({
     rate: {type: Number},

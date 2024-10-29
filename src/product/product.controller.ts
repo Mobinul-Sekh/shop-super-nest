@@ -15,8 +15,15 @@ export class ProductController {
     return await this.productService.createProduct(body);
   }
 
-  @Get('find')
+  @Get('findAll')
   async findProducts() {
     return await this.productService.findAllProducts();
+  }
+
+  @Get('findById/:productId')
+  async findByProductId(
+    @Body() productId: string
+  ) {
+    return await this.productService.findByProductId(productId);
   }
 }

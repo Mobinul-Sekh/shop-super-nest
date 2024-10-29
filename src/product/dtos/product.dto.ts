@@ -4,6 +4,7 @@ export class ProductDTO {
   price: number;
   category: string;
   image: string;
+  isAddedToCart: boolean;
   rating: {
     rate: number;
     count: number;
