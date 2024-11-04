@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { CartDTO } from './dtos/cart.dto';
+import { CartDocument } from 'src/schemas/cart.schema';
+import { ResponseInterface } from 'src/error-handler/interfaces';
 
 @Controller('cart')
 export class CartController {
@@ -9,21 +10,45 @@ export class CartController {
   ) {}
 
   @Post('add')
-  async addProductToCart(
-    @Body() body: CartDTO
-  ) {
-    return await this.cartService.addProductToCart(body);
+  async addProductToCart (
+    @Body() body: CartDocument
+  ): Promise<ResponseInterface> {
+    try {
+      return {
+        success: true,
+        message: `successfully saved the product in cart`,
+        data: await this.cartService.addProductToCart(body)
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Get('findAll')
-  async findAllProductsInCart() {
-    return await this.cartService.findAllProductsInCart();
+  async findAllProductsInCart(): Promise<ResponseInterface> {
+    try {
+      return {
+        success: true,
+        message: `successfully fetched all products in cart`,
+        data: await this.cartService.findAllProductsInCart()
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Get('findById/:productId')
   async findByProductId(
     @Param('productId') productId: string
-  ) {
-    return await this.cartService.findByProductId(productId);
+  ): Promise<ResponseInterface> {
+    try {
+      return {
+        success: true,
+        message: `successfully fetched product with id ${productId}`,
+        data: await this.cartService.findByProductId(productId)
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 }

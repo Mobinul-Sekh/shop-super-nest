@@ -3,3 +3,9 @@ export interface ResponseInterface {
   message: string;
   data: Record<string, any>
 }
+
+export interface AuthResponseInterface {
+  success: boolean;
+  message: string;
+  token: string;
+}
