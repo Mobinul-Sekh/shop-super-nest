@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -13,12 +13,22 @@ import { UserDetailsModule } from './user-details/user-details.module';
 import { UserCredentialModule } from './user-credential/user-credential.module';
 import * as dotenv from 'dotenv';
 import { UserCredentialService } from './user-credential/user-credential.service';
+import { VariantModule } from './variant/variant.module';
+import { LoggerMiddleware } from './logger/logger.middleware';
 
 dotenv.config({ path: process.cwd() + '/.env.development' });
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.MONGODB_STRING), ProductModule, CartModule, AuthModule, UserModule, UserAddressModule, UserDetailsModule, UserCredentialModule],
+  imports: [MongooseModule.forRoot(process.env.MONGODB_STRING), ProductModule, CartModule, AuthModule, UserModule, UserAddressModule, UserDetailsModule, UserCredentialModule, VariantModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(){
+  }
+  configure(consumer: MiddlewareConsumer): void {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('**');
+  }
+}
