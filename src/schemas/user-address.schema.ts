@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { HydratedDocument } from "mongoose";
-import { User } from "./user.schema";
+import { HydratedDocument } from "mongoose";
 
 export type UserAddressDocument = HydratedDocument<UserAddress>;
 
@@ -8,6 +7,9 @@ export type UserAddressDocument = HydratedDocument<UserAddress>;
 export class UserAddress {
   @Prop({required: true, unique: true})
   id: string;
+
+  @Prop()
+  coordinates: string;
   
   @Prop()
   houseNo: string;

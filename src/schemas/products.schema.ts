@@ -1,5 +1,6 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { ProductDetails } from './product-details.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -31,6 +32,15 @@ export class Product {
     count: {type: Number}
   }))
   rating: Record<string, any>
+
+  @Prop({ required: true })
+  productDetailsId: string
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: ProductDetails
+  })
+  productDetails: ProductDetails
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

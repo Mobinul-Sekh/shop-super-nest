@@ -9,6 +9,7 @@ import { UserAddressService } from 'src/user-address/user-address.service';
 import { UserDetailService } from 'src/user-details/user-details.service';
 import { UserCredentialService } from 'src/user-credential/user-credential.service';
 import { LoginDTO } from './dtos/login.dto';
+import { UserStatusEnum } from 'src/schemas/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -52,8 +53,6 @@ export class AuthService {
       pinCode: ""
     })
 
-    console.log("address id ->", addressCreated.id)
-
     await this.userDetailService.createUserAddress({
       id: createdUser.detailsId,
       phone: "",
@@ -73,7 +72,7 @@ export class AuthService {
     
     return this._createToken({
       uid: createdUser.uid,
-      userEmail: createdUser.email,
+      userPhone: createdUser.phoneNo,
       userName: createdUser.name,
       role: createdUser.role,
       priority: createdUser.priority
@@ -92,13 +91,13 @@ export class AuthService {
       throw new BadRequestException(`invalid password!`)
     }
 
-    if (!userExists.isActive) {
+    if (userExists.status !== UserStatusEnum.ACTIVE) {
       throw new BadRequestException(`your account is no longer available!, contract to customer service`)
     }
 
     return this._createToken({
       uid: userExists.uid,
-      userEmail: userExists.email,
+      userPhone: userExists.phoneNo,
       userName: userExists.name,
       role: userExists.role,
       priority: userExists.priority

@@ -1,6 +1,6 @@
 import { Prop, Schema } from "@nestjs/mongoose";
 
-export enum CategoryType {
+export enum CategoryTypeEnum {
   ClothingAndFashion = 'clothing and Fashion',
   Electronics = 'electronics',
   HealthAndBeauty = 'health and beauty',
@@ -15,8 +15,11 @@ export class Category {
   @Prop({required: true})
   name: string;
 
-  @Prop({required: true})
-  type: CategoryType
+  @Prop({
+    required: true,
+    enum: CategoryTypeEnum
+  })
+  type: CategoryTypeEnum
 
   @Prop()
   variantsId: string;

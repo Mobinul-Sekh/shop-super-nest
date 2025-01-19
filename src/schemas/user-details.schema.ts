@@ -9,7 +9,7 @@ export class UserDetail {
   id: string;
 
   @Prop()
-  phone: string
+  email: string
 
   @Prop()
   isPhoneVerified: boolean

@@ -13,7 +13,7 @@ export interface JWTClaim {
   uid: string
   role: UserRoleEnum
   userName: string
-  userEmail: string
+  userPhone: string
   priority: UserPriorityEnum
   phone?:string
   orgId?: string

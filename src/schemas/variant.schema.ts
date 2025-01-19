@@ -16,7 +16,10 @@ export class Variant {
   @Prop({required: true})
   name: string;
 
-  @Prop({required: true})
+  @Prop({
+    required: true,
+    enum: VariantTypeEnum
+  })
   type: VariantTypeEnum
 
   @Prop({required: true})
