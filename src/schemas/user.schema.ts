@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
-import { UserPriorityEnum, UserRoleEnum } from "src/auth/dtos/jwt-claim.dto";
+import { UserPriorityEnum, UserRoleEnum } from "../auth/dtos/jwt-claim.dto";
 
 export enum UserStatusEnum {
   ACTIVE = 'active',

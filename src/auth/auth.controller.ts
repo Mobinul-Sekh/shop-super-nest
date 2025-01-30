@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthResponseInterface } from 'src/error-handler/interfaces';
+import { AuthResponseInterface } from '../error-handler/interfaces';
 import { SignupDTO } from './dtos/signup.dto';
 import { JwtAuthGuard } from './strategies/jwt.strategy';
 import { LoginDTO } from './dtos/login.dto';

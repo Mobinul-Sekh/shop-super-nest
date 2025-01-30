@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ProductDocument } from 'src/schemas/products.schema';
-import { ResponseInterface } from 'src/error-handler/interfaces';
+import { ProductDocument } from '../schemas/products.schema';
+import { ResponseInterface } from '../error-handler/interfaces';
 
 @Controller('product')
 export class ProductController {

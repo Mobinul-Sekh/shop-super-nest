@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpException, Param, Post } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { CartDocument } from 'src/schemas/cart.schema';
-import { ResponseInterface } from 'src/error-handler/interfaces';
+import { CartDocument } from '../schemas/cart.schema';
+import { ResponseInterface } from '../error-handler/interfaces';
 
 @Controller('cart')
 export class CartController {

@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SignupDTO } from './dtos/signup.dto';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import { v4 as uuid } from 'uuid';
 import { JWTClaim, UserPriorityEnum, UserRoleEnum } from './dtos/jwt-claim.dto';
 import * as bcrypt from "bcrypt"
-import { UserAddressService } from 'src/user-address/user-address.service';
-import { UserDetailService } from 'src/user-details/user-details.service';
-import { UserCredentialService } from 'src/user-credential/user-credential.service';
+import { UserAddressService } from '../user-address/user-address.service';
+import { UserDetailService } from '../user-details/user-details.service';
+import { UserCredentialService } from '../user-credential/user-credential.service';
 import { LoginDTO } from './dtos/login.dto';
-import { UserStatusEnum } from 'src/schemas/user.schema';
+import { UserStatusEnum } from '../schemas/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -33,10 +33,9 @@ export class AuthService {
     const createdUser = await this.userService.createUser({
       uid: uuid(),
       name: userDto.name,
-      email: userDto.email,
+      phoneNo: userDto.email,
       role: UserRoleEnum.customer,
       priority: UserPriorityEnum.normal,
-      isActive: true,
       detailsId: detailsId,
       credentialId: credentialId
     });

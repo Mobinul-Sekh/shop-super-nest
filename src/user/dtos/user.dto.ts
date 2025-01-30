@@ -1,10 +1,9 @@
-import { UserPriorityEnum, UserRoleEnum } from "src/auth/dtos/jwt-claim.dto";
+import { UserPriorityEnum, UserRoleEnum } from "../../auth/dtos/jwt-claim.dto";
 
 export class UserDTO {
   uid: string;
   name: string
-  email: string
-  isActive: boolean
+  phoneNo: string
   role: UserRoleEnum
   priority: UserPriorityEnum
   detailsId: string

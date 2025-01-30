@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/schemas/user.schema';
-import { UserCredential, UserCredentialSchema } from 'src/schemas/user-credentials.schema';
-import { UserDetail, UserDetailSchema } from 'src/schemas/user-details.schema';
+import { User, UserSchema } from '../schemas/user.schema';
+import { UserCredential, UserCredentialSchema } from '../schemas/user-credentials.schema';
+import { UserDetail, UserDetailSchema } from '../schemas/user-details.schema';
 
 @Module({
   imports: [MongooseModule.forFeature([

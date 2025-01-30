@@ -37,8 +37,7 @@ export class Product {
   productDetailsId: string
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: ProductDetails
+    type: () => ProductDetails
   })
   productDetails: ProductDetails
 }

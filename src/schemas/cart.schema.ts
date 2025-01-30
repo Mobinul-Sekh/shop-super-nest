@@ -20,14 +20,12 @@ export class Cart {
   productQty: Number;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: User
+    type: () => User
   })
   user: User;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Product
+    type: () => Product,
   })
   product: Product
 }
