@@ -2,16 +2,49 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product, ProductDocument } from '../schemas/products.schema';
+import { ProductDto } from './dtos/create-product.dto';
+import { VariantService } from 'src/variant/variant.service';
+import { CategoryService } from 'src/category/category.service';
+import { ProductDetailsService } from 'src/product-details/product-details.service';
 
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<Product>
+    @InjectModel(Product.name) private productModel: Model<Product>,
+    private readonly variantService: VariantService,
+    private readonly categoryService: CategoryService,
+    private readonly productDetailsService: ProductDetailsService
   ) {}
 
-  async createProduct(productDto: ProductDocument): Promise<Product> {
-    const createdProduct = new this.productModel(productDto);
-    return createdProduct.save();
+  async createProduct(productDto: ProductDto): Promise<ProductDto> {
+    const createdVariants = await this.variantService.createManyVariant(productDto.categoryData.variantsData);
+
+    const createdCategory = await this.categoryService.createCategory({
+      name: productDto.categoryData.name,
+      type: productDto.categoryData.type,
+      variants: createdVariants
+    });
+
+    const createdProductDetails = await this.productDetailsService.createProductDetails({
+      productGSTPercent: productDto.productDetailsData.productGSTPercent,
+      productGST: productDto.productDetailsData.productGST,
+      desc: productDto.productDetailsData.desc,
+      summary: productDto.productDetailsData.summary,
+      features: productDto.productDetailsData.features
+    })
+
+    const createdProduct = new this.productModel({
+      title: productDto.title,
+      price: productDto.price,
+      image: productDto.image,
+      isAddedToCart: productDto.isAddedToCart,
+      rating: productDto.rating,
+      productDetails: createdProductDetails,
+      category: createdCategory
+    });
+    createdProduct.save();
+
+    return createdProduct.id;
   }
 
   async findAllProducts(): Promise<ProductDocument[]> {

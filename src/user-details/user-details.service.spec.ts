@@ -7,7 +7,6 @@ import { UserDetailsDTO } from './dtos/user-details.dto';
 
 // ✅ Mock User Details Data
 const mockUserDetailDto: UserDetailsDTO = {
-  id: '12345',
   email: 'test@example.com',
   isPhoneVerified: true,
   isEmailVerified: false,

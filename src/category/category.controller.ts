@@ -1,7 +1,8 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CategoryDocument } from 'src/schemas/category.schema';
+import { Category, CategoryDocument } from 'src/schemas/category.schema';
 import { ResponseInterface } from 'src/error-handler/interfaces';
+import { CategoryDto } from './dtos/createCategory.dto';
 
 @Controller('category')
 export class CategoryController {
@@ -11,7 +12,7 @@ export class CategoryController {
 
   @Post('create')
   async createCategory(
-    @Body() body: CategoryDocument
+    @Body() body: Category
   ): Promise<ResponseInterface> {
     try {
       return {

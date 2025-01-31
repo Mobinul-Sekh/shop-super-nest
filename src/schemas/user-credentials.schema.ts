@@ -3,11 +3,8 @@ import { HydratedDocument } from "mongoose";
 
 export type UserCredentialDocument = HydratedDocument<UserCredential>
 
-@Schema()
+@Schema({ timestamps: true })
 export class UserCredential {
-  @Prop({required: true, unique: true})
-  id: string;
-  
   @Prop()
   type: string
 

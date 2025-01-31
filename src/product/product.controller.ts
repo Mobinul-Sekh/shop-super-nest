@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpException, Param, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ProductDocument } from '../schemas/products.schema';
 import { ResponseInterface } from '../error-handler/interfaces';
+import { ProductDto } from './dtos/create-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -11,7 +11,7 @@ export class ProductController {
 
   @Post('/create')
   async createProduct(
-    @Body() body: ProductDocument
+    @Body() body: ProductDto
   ): Promise<ResponseInterface> {
     try {
       return {

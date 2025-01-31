@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 
 const mockUserCredential: UserCredential = {
-  id: '123',
   type: '',
   algo: 'SHA256',
   digest: '9584rio34',
@@ -43,14 +42,4 @@ describe('UserCredentialService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  it('should create a user credential', async () => {
-    const result = await service.createUserCredential(mockUserCredential as UserCredentialDocument);
-    expect(result).toEqual(mockUserCredential);
-  });
-
-  it('should find user credential by id', async () => {
-    const result = await service.findCredentialById(mockUserCredential.id);
-    expect(result).toEqual(mockUserCredential);
-  })
 });

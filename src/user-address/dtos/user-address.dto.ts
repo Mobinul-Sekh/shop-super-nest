@@ -1,5 +1,4 @@
 export class UserAddressDTO {
-  id: string
   houseNo: string
   landmark: string
   street: string

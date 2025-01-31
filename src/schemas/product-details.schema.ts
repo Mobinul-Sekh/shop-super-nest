@@ -3,11 +3,8 @@ import { HydratedDocument } from "mongoose";
 
 export type ProductDetailsDocument = HydratedDocument<ProductDetails>
 
-@Schema()
+@Schema({ timestamps: true })
 export class ProductDetails {
-  @Prop({required: true, unique: true})
-  id: string;
-
   @Prop()
   productGSTPercent: Number;
 

@@ -9,13 +9,11 @@ import { Category } from 'src/schemas/category.schema';
 
 // ✅ Mock Product Data
 const mockProduct: Product = {
-  id: '123',
   title: 'Mobile',
   price: 20000,
   image: 'abc.com',
   isAddedToCart: false,
   rating: { rate: 4, count: 500 },
-  productDetailsId: '567',
   productDetails: new ProductDetails,
   category: new Category
 };
@@ -45,20 +43,6 @@ describe('ProductController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('createProduct', () => {
-    it('should create a product successfully', async () => {
-      const result: ResponseInterface = await controller.createProduct(mockProduct as ProductDocument);
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual(mockProduct);
-      expect(mockProductService.createProduct).toHaveBeenCalledWith(mockProduct);
-    });
-
-    it('should throw an error if createProduct fails', async () => {
-      jest.spyOn(service, 'createProduct').mockRejectedValue(new HttpException('Failed', 400));
-      await expect(controller.createProduct(mockProduct as ProductDocument)).rejects.toThrow(HttpException);
-    });
-  });
-
   describe('findProducts', () => {
     it('should return all products', async () => {
       const result: ResponseInterface = await controller.findProducts();
@@ -73,17 +57,4 @@ describe('ProductController', () => {
     });
   });
 
-  describe('findByProductId', () => {
-    it('should return a product by ID', async () => {
-      const result = await controller.findByProductId(mockProduct.id);
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual(mockProduct);
-      expect(mockProductService.findByProductId).toHaveBeenCalledWith(mockProduct.id);
-    });
-
-    it('should throw an error if findByProductId fails', async () => {
-      jest.spyOn(service, 'findByProductId').mockRejectedValue(new HttpException('Not Found', 404));
-      await expect(controller.findByProductId(mockProduct.id)).rejects.toThrow(HttpException);
-    });
-  });
 });

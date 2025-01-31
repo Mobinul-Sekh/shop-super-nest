@@ -3,11 +3,8 @@ import { HydratedDocument } from "mongoose";
 
 export type UserAddressDocument = HydratedDocument<UserAddress>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class UserAddress {
-  @Prop({required: true, unique: true})
-  id: string;
-
   @Prop()
   coordinates: string;
   

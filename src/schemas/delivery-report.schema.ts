@@ -14,11 +14,8 @@ export enum DeliveryStatusEnum {
 
 export type DeliveryReportDocument = HydratedDocument<DeliveryReport>
 
-@Schema()
+@Schema({ timestamps: true })
 export class DeliveryReport {
-  @Prop({required: true, unique: true})
-  id: string;
-  
   @Prop({required: true})
   deliveryDate: Date;
   

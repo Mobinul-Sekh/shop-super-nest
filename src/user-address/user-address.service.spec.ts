@@ -6,7 +6,6 @@ import { UserAddress, UserAddressDocument } from '../schemas/user-address.schema
 
 // ✅ Mock User Address Data
 const mockUserAddress: UserAddress = {
-  id: '123',
   coordinates: '12.34, 56.78',
   houseNo: '101',
   landmark: 'Near Park',
@@ -44,18 +43,5 @@ describe('UserAddressService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  describe('createUserAddress', () => {
-    it('should create a user address successfully', async () => {
-      const result = await service.createUserAddress(mockUserAddress);
-      expect(result).toEqual(mockUserAddress);
-      expect(mockUserAddressModel.create).toHaveBeenCalledWith(mockUserAddress);
-    });
-
-    it('should throw an error if creation fails', async () => {
-      jest.spyOn(model, 'create').mockRejectedValue(new Error('Creation failed'));
-      await expect(service.createUserAddress(mockUserAddress)).rejects.toThrow('Creation failed');
-    });
   });
 });

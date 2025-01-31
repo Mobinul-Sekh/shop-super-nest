@@ -6,21 +6,19 @@ import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { UserDetailService } from './user-details/user-details.service';
-import { UserAddressService } from './user-address/user-address.service';
 import { UserAddressModule } from './user-address/user-address.module';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UserCredentialModule } from './user-credential/user-credential.module';
 import * as dotenv from 'dotenv';
-import { UserCredentialService } from './user-credential/user-credential.service';
 import { VariantModule } from './variant/variant.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { CategoryModule } from './category/category.module';
+import { ProductDetailsModule } from './product-details/product-details.module';
 
 dotenv.config({ path: process.cwd() + '/.env.development' });
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.MONGODB_STRING), ProductModule, CartModule, AuthModule, UserModule, UserAddressModule, UserDetailsModule, UserCredentialModule, VariantModule, CategoryModule],
+  imports: [MongooseModule.forRoot(process.env.MONGODB_STRING), ProductModule, CartModule, AuthModule, UserModule, UserAddressModule, UserDetailsModule, UserCredentialModule, VariantModule, CategoryModule, ProductDetailsModule],
   controllers: [AppController],
   providers: [AppService],
 })

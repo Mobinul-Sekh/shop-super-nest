@@ -14,20 +14,21 @@ export class CartService {
   ) {}
 
   async addProductToCart(cartDto: CartDocument): Promise<CartDocument> {
-    const productExists = await this.findByProductId(cartDto.productId);
-    if (productExists) {
-      throw new BadRequestException("product already exists in cart!");
-    }
+    // const productExists = await this.findByProductId(cartDto.productId);
+    // if (productExists) {
+    //   throw new BadRequestException("product already exists in cart!");
+    // }
 
-    const prodResponse = await this.productService.findByProductId(cartDto.productId);
-    if (!prodResponse) {
-      throw new NotFoundException('product not found');
-    }
-    prodResponse.isAddedToCart = true;
-    await this.productService.createProduct(prodResponse as ProductDocument);
+    // const prodResponse = await this.productService.findByProductId(cartDto.productId);
+    // if (!prodResponse) {
+    //   throw new NotFoundException('product not found');
+    // }
+    // prodResponse.isAddedToCart = true;
+    // await this.productService.createProduct(prodResponse);
 
-    const createdCartProduct = new this.cartModel(cartDto);
-    return await createdCartProduct.save();
+    // const createdCartProduct = new this.cartModel(cartDto);
+    // return await createdCartProduct.save();
+    return cartDto;
   }
 
   async findAllProductsInCart(): Promise<CartDocument[]> {

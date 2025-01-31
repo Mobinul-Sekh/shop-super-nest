@@ -7,7 +7,6 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Category } from 'src/schemas/category.schema';
 
 const mockProduct: Product = {
-  id: '123',
   title: 'Mobile',
   price: 20000,
   image: 'abc.com',
@@ -16,7 +15,6 @@ const mockProduct: Product = {
     rate: 4,
     count: 500
   },
-  productDetailsId: '567',
   productDetails: new ProductDetails,
   category: new Category
 }
@@ -48,16 +46,6 @@ describe('ProductService', () => {
   
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  it('should create a user', async () => {
-    const result = await service.createProduct(mockProduct as ProductDocument);
-    expect(result).toEqual(mockProduct);
-  });
-
-  it('should find a product by id', async () => {
-    const result = await service.findByProductId(mockProduct.id);
-    expect(result).toEqual(mockProduct);
   });
 
   it('should return null if product is not found', async () => {

@@ -5,11 +5,8 @@ import { Category } from './category.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Product {
-  @Prop({ required: true, unique: true })
-  id: string;
-
   @Prop({ required: true })
   title: string;
 
@@ -32,9 +29,6 @@ export class Product {
     rate: number;
     count: number;
   };
-
-  @Prop({ required: true })
-  productDetailsId: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

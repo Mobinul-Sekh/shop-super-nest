@@ -11,11 +11,8 @@ export enum CategoryTypeEnum {
 
 export type CategoryDocument = HydratedDocument<Category>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Category {
-  @Prop({ required: true })
-  id: string;
-
   @Prop({ required: true })
   name: string;
 

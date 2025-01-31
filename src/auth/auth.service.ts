@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { SignupDTO } from './dtos/signup.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { v4 as uuid } from 'uuid';
 import { JWTClaim, UserPriorityEnum, UserRoleEnum } from './dtos/jwt-claim.dto';
 import * as bcrypt from 'bcrypt';
 import { UserAddressService } from '../user-address/user-address.service';
@@ -10,6 +9,7 @@ import { UserDetailService } from '../user-details/user-details.service';
 import { UserCredentialService } from '../user-credential/user-credential.service';
 import { LoginDTO } from './dtos/login.dto';
 import { UserStatusEnum } from '../schemas/user.schema';
+import { generateUUID } from 'src/lib/helper.lib';
 
 @Injectable()
 export class AuthService {
@@ -21,21 +21,16 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  private generateUUID() {
-    return uuid();
-  }
-
   private async createUserCredentials(password: string): Promise<string> {
     const hashedPassword = await bcrypt.hash(password, 10);
     return hashedPassword;
   }
 
   private async createUser(userDto: SignupDTO): Promise<any> {
-    const detailsId = this.generateUUID();
-    const credentialId = this.generateUUID();
+    const detailsId = generateUUID();
+    const credentialId = generateUUID();
 
     return await this.userService.createUser({
-      uid: this.generateUUID(),
       name: userDto.name,
       phoneNo: userDto.email,
       role: UserRoleEnum.customer,
@@ -46,9 +41,8 @@ export class AuthService {
   }
 
   private async createUserAddress(): Promise<any> {
-    const addressId = this.generateUUID();
+    const addressId = generateUUID();
     return await this.userAddressService.createUserAddress({
-      id: addressId,
       houseNo: '',
       landmark: '',
       street: '',
@@ -61,7 +55,6 @@ export class AuthService {
 
   private async createUserDetails(detailsId: string): Promise<void> {
     await this.userDetailService.createUserDetails({
-      id: detailsId,
       email: '',
       isPhoneVerified: false,
       isEmailVerified: false,
@@ -70,7 +63,6 @@ export class AuthService {
 
   private async createUserCredential(credentialId: string, hashedPassword: string): Promise<void> {
     await this.userCredentialService.createUserCredential({
-      id: credentialId,
       type: '',
       algo: '',
       digest: hashedPassword,
@@ -80,7 +72,7 @@ export class AuthService {
 
   private async createJWTToken(user: any): Promise<string> {
     const tokenPayload: JWTClaim = {
-      uid: user.uid,
+      uid: user._id,
       userPhone: user.phoneNo,
       userName: user.name,
       role: user.role,

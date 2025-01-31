@@ -15,20 +15,17 @@ describe('CartService', () => {
   let productModel: Model<ProductDocument>;
 
   const createMockProduct = (overrides?: Partial<Product>): Product => ({
-    id: '123',
     title: 'Test Product',
     price: 100,
     image: 'test-image.jpg',
     isAddedToCart: false,
     rating: { rate: 4.5, count: 100 },
-    productDetailsId: 'productDetails1',
     productDetails: { productDetailsId: 'productDetails1' } as any,
     category: new Category,
     ...overrides,
   });
 
   const createMockCart = (overrides?: Partial<Cart>): Cart => ({
-    id: 'cart123',
     productId: '123',
     userId: 'user1',
     productQty: 2,

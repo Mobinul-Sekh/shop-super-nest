@@ -8,11 +8,8 @@ export enum VariantTypeEnum {
 
 export type VariantDocument = HydratedDocument<Variant>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Variant {
-  @Prop({required: true, unique: true})
-  id: string;
-
   @Prop({required: true})
   name: string;
 

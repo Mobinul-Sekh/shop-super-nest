@@ -5,11 +5,8 @@ import { Product } from "./products.schema";
 
 export type CartDocument = HydratedDocument<Cart>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Cart {
-  @Prop({required: true, unique: true})
-  id: string;
-
   @Prop({require: true})
   productId: string;
 
