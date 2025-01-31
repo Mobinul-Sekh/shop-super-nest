@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { v4 as uuid } from 'uuid';
 import { JWTClaim, UserPriorityEnum, UserRoleEnum } from './dtos/jwt-claim.dto';
-import * as bcrypt from "bcrypt"
+import * as bcrypt from 'bcrypt';
 import { UserAddressService } from '../user-address/user-address.service';
 import { UserDetailService } from '../user-details/user-details.service';
 import { UserCredentialService } from '../user-credential/user-credential.service';
@@ -21,89 +21,105 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  async userSignup(userDto: SignupDTO): Promise<string> {
-    if (userDto.password !== userDto.confirmPassword) {
-      throw new BadRequestException('password and confirm password does not match');
-    }
+  private generateUUID() {
+    return uuid();
+  }
 
-    const hashedPassword = await bcrypt.hash(userDto.password, 10);
-    
-    const detailsId = uuid();
-    const credentialId = uuid();
-    const createdUser = await this.userService.createUser({
-      uid: uuid(),
+  private async createUserCredentials(password: string): Promise<string> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return hashedPassword;
+  }
+
+  private async createUser(userDto: SignupDTO): Promise<any> {
+    const detailsId = this.generateUUID();
+    const credentialId = this.generateUUID();
+
+    return await this.userService.createUser({
+      uid: this.generateUUID(),
       name: userDto.name,
       phoneNo: userDto.email,
       role: UserRoleEnum.customer,
       priority: UserPriorityEnum.normal,
-      detailsId: detailsId,
-      credentialId: credentialId
+      detailsId,
+      credentialId,
     });
+  }
 
-    const addressId = uuid();
-    const addressCreated = await this.userAddressService.createUserAddress({
+  private async createUserAddress(): Promise<any> {
+    const addressId = this.generateUUID();
+    return await this.userAddressService.createUserAddress({
       id: addressId,
-      houseNo: "",
-      landmark: "",
-      street: "",
-      city: "",
-      state: "",
-      country: "",
-      pinCode: ""
-    })
+      houseNo: '',
+      landmark: '',
+      street: '',
+      city: '',
+      state: '',
+      country: '',
+      pinCode: '',
+    });
+  }
 
-    await this.userDetailService.createUserAddress({
-      id: createdUser.detailsId,
-      phone: "",
+  private async createUserDetails(detailsId: string): Promise<void> {
+    await this.userDetailService.createUserDetails({
+      id: detailsId,
+      email: '',
       isPhoneVerified: false,
       isEmailVerified: false,
-      addressIds: [addressCreated.id]
-    })
+    });
+  }
 
+  private async createUserCredential(credentialId: string, hashedPassword: string): Promise<void> {
     await this.userCredentialService.createUserCredential({
-      id: createdUser.credentialId,
-      type: "",
-      algo: "",
+      id: credentialId,
+      type: '',
+      algo: '',
       digest: hashedPassword,
-      encrypted: "true"
-    })
+      encrypted: 'true',
+    });
+  }
 
+  private async createJWTToken(user: any): Promise<string> {
+    const tokenPayload: JWTClaim = {
+      uid: user.uid,
+      userPhone: user.phoneNo,
+      userName: user.name,
+      role: user.role,
+      priority: user.priority,
+    };
+    return this.jwtService.sign(tokenPayload);
+  }
+
+  async userSignup(userDto: SignupDTO): Promise<string> {
+    if (userDto.password !== userDto.confirmPassword) {
+      throw new BadRequestException('Password and confirm password do not match');
+    }
+
+    const hashedPassword = await this.createUserCredentials(userDto.password);
+    const createdUser = await this.createUser(userDto);
     
-    return this._createToken({
-      uid: createdUser.uid,
-      userPhone: createdUser.phoneNo,
-      userName: createdUser.name,
-      role: createdUser.role,
-      priority: createdUser.priority
-    })
+    await this.createUserAddress();
+    await this.createUserDetails(createdUser.detailsId);
+    await this.createUserCredential(createdUser.credentialId, hashedPassword);
+
+    return this.createJWTToken(createdUser);
   }
 
   async userLogin(loginDto: LoginDTO): Promise<string> {
     const userExists = await this.userService.findUserByEmail(loginDto.email);
     if (!userExists) {
-      throw new BadRequestException(`no user registered with this email, please signup first.`)
+      throw new BadRequestException('No user registered with this email. Please signup first.');
     }
 
     const credential = await this.userCredentialService.findCredentialById(userExists.credentialId);
-    const validPassword = bcrypt.compare(credential.digest, loginDto.password);
+    const validPassword = await bcrypt.compare(loginDto.password, credential.digest);
     if (!validPassword) {
-      throw new BadRequestException(`invalid password!`)
+      throw new BadRequestException('Invalid password!');
     }
 
     if (userExists.status !== UserStatusEnum.ACTIVE) {
-      throw new BadRequestException(`your account is no longer available!, contract to customer service`)
+      throw new BadRequestException('Your account is no longer available. Contact customer service.');
     }
 
-    return this._createToken({
-      uid: userExists.uid,
-      userPhone: userExists.phoneNo,
-      userName: userExists.name,
-      role: userExists.role,
-      priority: userExists.priority
-    })
-  }
-
-  private _createToken(tokenPayload: JWTClaim) {
-    return this.jwtService.sign(tokenPayload);
+    return this.createJWTToken(userExists);
   }
 }

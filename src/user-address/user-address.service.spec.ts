@@ -4,7 +4,8 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserAddress, UserAddressDocument } from '../schemas/user-address.schema';
 
-const mockUserAddress = {
+// ✅ Mock User Address Data
+const mockUserAddress: UserAddress = {
   id: '123',
   coordinates: '12.34, 56.78',
   houseNo: '101',
@@ -16,6 +17,12 @@ const mockUserAddress = {
   pinCode: '10001',
 };
 
+// ✅ Mock Mongoose Model
+const mockUserAddressModel = {
+  create: jest.fn().mockResolvedValue(mockUserAddress), // Mock create
+  save: jest.fn().mockResolvedValue(mockUserAddress), // Mock save
+};
+
 describe('UserAddressService', () => {
   let service: UserAddressService;
   let model: Model<UserAddressDocument>;
@@ -25,13 +32,8 @@ describe('UserAddressService', () => {
       providers: [
         UserAddressService,
         {
-          provide: getModelToken(UserAddress.name), // ✅ Provide the model token
-          useValue: {
-            create: jest.fn().mockResolvedValue(mockUserAddress), // Mock create method
-            find: jest.fn().mockResolvedValue([mockUserAddress]), // Mock find method
-            findById: jest.fn().mockResolvedValue(mockUserAddress), // Mock findById method
-            save: jest.fn().mockResolvedValue(mockUserAddress), // Mock save method
-          },
+          provide: getModelToken(UserAddress.name),
+          useValue: mockUserAddressModel,
         },
       ],
     }).compile();
@@ -44,8 +46,16 @@ describe('UserAddressService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a user address', async () => {
-    const result = await service.createUserAddress(mockUserAddress);
-    expect(result).toEqual(mockUserAddress);
+  describe('createUserAddress', () => {
+    it('should create a user address successfully', async () => {
+      const result = await service.createUserAddress(mockUserAddress);
+      expect(result).toEqual(mockUserAddress);
+      expect(mockUserAddressModel.create).toHaveBeenCalledWith(mockUserAddress);
+    });
+
+    it('should throw an error if creation fails', async () => {
+      jest.spyOn(model, 'create').mockRejectedValue(new Error('Creation failed'));
+      await expect(service.createUserAddress(mockUserAddress)).rejects.toThrow('Creation failed');
+    });
   });
 });

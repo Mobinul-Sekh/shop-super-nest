@@ -1,4 +1,6 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Variant } from './variant.schema';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export enum CategoryTypeEnum {
   ClothingAndFashion = 'clothing and Fashion',
@@ -7,20 +9,28 @@ export enum CategoryTypeEnum {
   FoodAndBeverages = 'food and beverages',
 }
 
+export type CategoryDocument = HydratedDocument<Category>;
+
 @Schema()
 export class Category {
-  @Prop({required: true})
+  @Prop({ required: true })
   id: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   name: string;
 
   @Prop({
     required: true,
-    enum: CategoryTypeEnum
+    enum: CategoryTypeEnum,
   })
-  type: CategoryTypeEnum
+  type: CategoryTypeEnum;
 
-  @Prop()
-  variantsId: string;
+  @Prop({
+    required: true,
+    type: [mongoose.Schema.Types.ObjectId], // Array of ObjectIds for variants
+    ref: 'Variant', // Reference to Variant model
+  })
+  variants: Variant[];
 }
+
+export const CategorySchema = SchemaFactory.createForClass(Category);

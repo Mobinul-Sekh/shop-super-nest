@@ -15,11 +15,12 @@ import * as dotenv from 'dotenv';
 import { UserCredentialService } from './user-credential/user-credential.service';
 import { VariantModule } from './variant/variant.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import { CategoryModule } from './category/category.module';
 
 dotenv.config({ path: process.cwd() + '/.env.development' });
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.MONGODB_STRING), ProductModule, CartModule, AuthModule, UserModule, UserAddressModule, UserDetailsModule, UserCredentialModule, VariantModule],
+  imports: [MongooseModule.forRoot(process.env.MONGODB_STRING), ProductModule, CartModule, AuthModule, UserModule, UserAddressModule, UserDetailsModule, UserCredentialModule, VariantModule, CategoryModule],
   controllers: [AppController],
   providers: [AppService],
 })

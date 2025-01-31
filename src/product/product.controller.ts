@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductDocument } from '../schemas/products.schema';
 import { ResponseInterface } from '../error-handler/interfaces';
@@ -39,16 +39,16 @@ export class ProductController {
 
   @Get('findById/:productId')
   async findByProductId(
-    @Body() productId: string
-  ) {
+    @Param('productId') productId: string
+  ): Promise<ResponseInterface> {
     try {
       return {
         success: true,
-        message: `successfully fetched product with id ${productId}`,
-        data: this.productService.findByProductId(productId)
-      }
-    } catch(err) {
-      throw new HttpException({message: err.message, success: false}, err.status);
+        message: `Successfully fetched product with id ${productId}`,
+        data: await this.productService.findByProductId(productId),
+      };
+    } catch (err) {
+      throw new HttpException({ message: err.message, success: false }, err.status);
     }
   }
 }

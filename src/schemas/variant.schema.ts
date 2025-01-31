@@ -26,4 +26,4 @@ export class Variant {
   typeOptions: string[]
 }
 
-export const variantSchema = SchemaFactory.createForClass(Variant);
+export const VariantSchema = SchemaFactory.createForClass(Variant);

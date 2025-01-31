@@ -10,7 +10,7 @@ export class UserDetailService {
     @InjectModel(UserDetail.name) private readonly userDetailsModel: Model<UserDetail>
   ) {}
 
-  async createUserAddress(userDetailDto: UserDetailsDTO): Promise<UserDetailDocument> {
+  async createUserDetails(userDetailDto: UserDetailsDTO): Promise<UserDetailDocument> {
     const createdUserDetails = new this.userDetailsModel(userDetailDto);
     return createdUserDetails.save();
   }

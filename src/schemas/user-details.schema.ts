@@ -16,9 +16,6 @@ export class UserDetail {
 
   @Prop()
   isEmailVerified: boolean
-
-  @Prop({ required: true, type: [String], default: [] })
-  addressIds: string[];
 }
 
 export const UserDetailSchema = SchemaFactory.createForClass(UserDetail);
