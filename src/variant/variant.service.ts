@@ -18,6 +18,6 @@ export class VariantService {
 
   async createManyVariant(manyVariantDto: Variant[]): Promise<Variant[]> {
     const createdVariants = await this.variantModel.insertMany(manyVariantDto);
-    return createdVariants.map((variant) => variant.id);
+    return createdVariants;
   }  
 }

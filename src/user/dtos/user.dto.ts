@@ -1,28 +1,36 @@
+import { Type } from "class-transformer";
 import { UserPriorityEnum, UserRoleEnum } from "../../auth/dtos/jwt-claim.dto";
-import { IsString, IsEnum, IsNotEmpty } from "class-validator";
+import { IsString, IsEnum, IsNotEmpty, ValidateNested } from "class-validator";
+import { UserDetailsDTO } from "src/user-details/dtos/user-details.dto";
+import { UserCredentialDTO } from "src/user-credential/dtos/user-credential.dto";
+import { UserAddressDTO } from "src/user-address/dtos/user-address.dto";
 
 export class UserDTO {
   @IsNotEmpty()
   @IsString()
-  name: string
+  readonly name: string
 
   @IsNotEmpty()
   @IsString()
-  phoneNo: string
+  readonly phoneNo: string
 
   @IsNotEmpty()
   @IsEnum(UserRoleEnum)
-  role: UserRoleEnum
+  readonly role: UserRoleEnum
 
   @IsNotEmpty()
   @IsEnum(UserPriorityEnum)
-  priority: UserPriorityEnum
+  readonly priority: UserPriorityEnum
 
-  @IsNotEmpty()
-  @IsString()
-  detailsId: string
+  @ValidateNested()
+  @Type(() => UserDetailsDTO)
+  readonly details: UserDetailsDTO
 
-  @IsNotEmpty()
-  @IsString()
-  credentialId: string
+  @ValidateNested()
+  @Type(() => UserCredentialDTO)
+  readonly credentials: UserCredentialDTO
+
+  @ValidateNested()
+  @Type(() => UserAddressDTO)
+  readonly addresses: UserAddressDTO
 }

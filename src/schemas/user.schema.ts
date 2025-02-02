@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 import { UserPriorityEnum, UserRoleEnum } from "../auth/dtos/jwt-claim.dto";
+import { UserDetail } from "./user-details.schema";
+import { UserCredential } from "./user-credentials.schema";
+import { UserAddress } from "./user-address.schema";
 
 export enum UserStatusEnum {
   ACTIVE = 'active',
@@ -11,9 +14,6 @@ export type UserDocument = HydratedDocument<User>
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({required: true})
-  uid: string;
-
   @Prop({required: true})
   name: string
 
@@ -40,11 +40,26 @@ export class User {
   })
   priority: UserPriorityEnum
 
-  @Prop({required: true})
-  detailsId: string;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserDetail',
+    required: true,
+  })
+  details: UserDetail;
 
-  @Prop({ required: true })
-  credentialId: string;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserCredential',
+    required: true,
+  })
+  credentials: UserCredential;
+
+  @Prop({
+    required: true,
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'UserAddress',
+  })
+  addresses: UserAddress;
 
   //TODO: assign cart id when user adds products to the cart for the first time.
   @Prop()

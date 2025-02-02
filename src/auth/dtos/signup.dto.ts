@@ -1,6 +1,6 @@
 export class SignupDTO {
   name: string
-  email: string
+  phoneNo: string
   password: string
   confirmPassword: string
 }

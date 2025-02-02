@@ -16,7 +16,7 @@ export class ProductService {
     private readonly productDetailsService: ProductDetailsService
   ) {}
 
-  async createProduct(productDto: ProductDto): Promise<ProductDto> {
+  async createProduct(productDto: ProductDto): Promise<Product> {
     const createdVariants = await this.variantService.createManyVariant(productDto.categoryData.variantsData);
 
     const createdCategory = await this.categoryService.createCategory({
@@ -57,7 +57,7 @@ export class ProductService {
 
   async findByProductId(productId: string): Promise<ProductDocument> {
     try {
-      const productFound = await this.productModel.findOne({id: productId}).exec();
+      const productFound = await this.productModel.findOne({_id: productId}).exec();
       if (!productFound) {
         throw new BadRequestException(`no product found with id ${productId}`)
       }

@@ -11,7 +11,7 @@ export class UserService {
   ) {}
 
   async createUser(userDto: UserDTO): Promise<UserDocument> {
-    const userExists = await this.findUserByEmail(userDto.phoneNo);
+    const userExists = await this.findUserByPhoneNo(userDto.phoneNo);
     if (userExists) {
       throw new BadRequestException('user already exists with this email id, please login!');
     }
@@ -28,7 +28,7 @@ export class UserService {
     return await this.userModel.findOne({uid: userId}).exec();
   }
 
-  async findUserByEmail(userPhoneNo: string): Promise<UserDocument> {
+  async findUserByPhoneNo(userPhoneNo: string): Promise<UserDocument> {
     return await this.userModel.findOne({phoneNo: userPhoneNo}).exec();
   }
 }

@@ -16,6 +16,6 @@ export class UserCredentialService {
   }
 
   async findCredentialById(credentialId: string): Promise<UserCredentialDocument> {
-    return this.userCredentialModel.findOne({ id: credentialId }).exec();
+    return this.userCredentialModel.findOne({ _id: credentialId }).exec();
   }
 }

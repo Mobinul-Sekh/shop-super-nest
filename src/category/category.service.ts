@@ -12,7 +12,6 @@ export class CategoryService {
 
   async createCategory(categoryDto: Category): Promise<Category> {
     const createdCategory = new this.categoryModel(categoryDto);
-    createdCategory.save();
-    return createdCategory.id;
+    return createdCategory.save();
   }
 }

@@ -9,7 +9,8 @@ import { UserDetailService } from '../user-details/user-details.service';
 import { UserCredentialService } from '../user-credential/user-credential.service';
 import { LoginDTO } from './dtos/login.dto';
 import { UserStatusEnum } from '../schemas/user.schema';
-import { generateUUID } from 'src/lib/helper.lib';
+import { UserDetailDocument } from 'src/schemas/user-details.schema';
+import { UserCredentialDocument } from 'src/schemas/user-credentials.schema';
 
 @Injectable()
 export class AuthService {
@@ -21,27 +22,12 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  private async createUserCredentials(password: string): Promise<string> {
+  private async createHashPassword(password: string): Promise<string> {
     const hashedPassword = await bcrypt.hash(password, 10);
     return hashedPassword;
   }
 
-  private async createUser(userDto: SignupDTO): Promise<any> {
-    const detailsId = generateUUID();
-    const credentialId = generateUUID();
-
-    return await this.userService.createUser({
-      name: userDto.name,
-      phoneNo: userDto.email,
-      role: UserRoleEnum.customer,
-      priority: UserPriorityEnum.normal,
-      detailsId,
-      credentialId,
-    });
-  }
-
   private async createUserAddress(): Promise<any> {
-    const addressId = generateUUID();
     return await this.userAddressService.createUserAddress({
       houseNo: '',
       landmark: '',
@@ -53,16 +39,16 @@ export class AuthService {
     });
   }
 
-  private async createUserDetails(detailsId: string): Promise<void> {
-    await this.userDetailService.createUserDetails({
+  private async createUserDetails(): Promise<UserDetailDocument> {
+    return await this.userDetailService.createUserDetails({
       email: '',
       isPhoneVerified: false,
       isEmailVerified: false,
     });
   }
 
-  private async createUserCredential(credentialId: string, hashedPassword: string): Promise<void> {
-    await this.userCredentialService.createUserCredential({
+  private async createUserCredential(hashedPassword: string): Promise<UserCredentialDocument> {
+    return await this.userCredentialService.createUserCredential({
       type: '',
       algo: '',
       digest: hashedPassword,
@@ -72,7 +58,7 @@ export class AuthService {
 
   private async createJWTToken(user: any): Promise<string> {
     const tokenPayload: JWTClaim = {
-      uid: user._id,
+      uid: user.id,
       userPhone: user.phoneNo,
       userName: user.name,
       role: user.role,
@@ -86,23 +72,32 @@ export class AuthService {
       throw new BadRequestException('Password and confirm password do not match');
     }
 
-    const hashedPassword = await this.createUserCredentials(userDto.password);
-    const createdUser = await this.createUser(userDto);
-    
-    await this.createUserAddress();
-    await this.createUserDetails(createdUser.detailsId);
-    await this.createUserCredential(createdUser.credentialId, hashedPassword);
+    const hashedPassword = await this.createHashPassword(userDto.password);
+    const details = await this.createUserDetails();
+    const addresses = await this.createUserAddress();
+    const credentials = await this.createUserCredential(hashedPassword);
 
+    const createdUser = await this.userService.createUser({
+      name: userDto.name,
+      phoneNo: userDto.phoneNo,
+      role: UserRoleEnum.customer,
+      priority: UserPriorityEnum.normal,
+      details: details,
+      addresses: addresses,
+      credentials: credentials
+    });
+    
     return this.createJWTToken(createdUser);
   }
 
   async userLogin(loginDto: LoginDTO): Promise<string> {
-    const userExists = await this.userService.findUserByEmail(loginDto.email);
+    const userExists = await this.userService.findUserByPhoneNo(loginDto.phoneNo);
     if (!userExists) {
       throw new BadRequestException('No user registered with this email. Please signup first.');
     }
 
-    const credential = await this.userCredentialService.findCredentialById(userExists.credentialId);
+    const credential = await this.userCredentialService.findCredentialById(userExists.credentials.toString());
+    
     const validPassword = await bcrypt.compare(loginDto.password, credential.digest);
     if (!validPassword) {
       throw new BadRequestException('Invalid password!');

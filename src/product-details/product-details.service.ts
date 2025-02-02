@@ -11,7 +11,6 @@ export class ProductDetailsService {
 
   async createProductDetails(productDetailsDto: ProductDetails): Promise<ProductDetails> {
     const createdProductDetails = new this.productDetailsModel(productDetailsDto);
-    createdProductDetails.save();
-    return createdProductDetails.id;
+    return createdProductDetails.save();
   }
 }
